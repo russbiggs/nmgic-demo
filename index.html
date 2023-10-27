@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+    <style>
+        body { margin: 0; padding: 0; }
+        html, body, #map { height: 100%; }
+    </style>
+</head>
+<body>
+    <button class="color-btn" style="position:absolute; top: 10px; right: 50px; z-index:10000;">Change color</button>
+    <div id="map"></div>
+    <script>
+
+
+        let colorvalues = [                            0,
+        '#CEC7FF',
+        0.055,
+        '#A497FD',
+        0.06,
+        '#8F81EE',
+        0.08, 
+        '#7867EB',
+        0.1,
+        '#6A5CD8',
+        0.12,
+        '#584DAE',
+        0.14,
+        '#241050',]
+
+
+        const colorBtn = document.querySelector('.color-btn');
+        colorBtn.addEventListener('click', ()=> {
+            colorvalues = [                            0,
+            '#ffffb2',
+            0.055,
+            '#fed976',
+            0.06,
+            '#feb24c',
+            0.08, 
+            '#fd8d3c',
+            0.1,
+            '#fc4e2a',
+            0.12,
+            '#e31a1c',
+            0.14,
+            '#b10026',]
+            map.setPaintProperty('houston', 'circle-color',                         [
+                'interpolate', ['linear'],
+                ['number', ['get', 'value']],
+                ...colorvalues
+            ]);
+        })
+
+
+
+        mapboxgl.accessToken = 'pk.eyJ1Ijoib3BlbmFxIiwiYSI6ImNrZTljZmtwbTAzNmsyeWsyenhzNzNsZ2oifQ.wHu8Zpc2J7m8pYm2_2zGbQ';
+        const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/openaq/cl7uo3iij000u16p9e88xibml?optimize=true',
+        zoom: 13,
+        center: [-95.3698, 29.7604],
+        maxZoom: 20,
+        hash:true
+        });
+
+    
+        map.on('load', () => {
+            map.addSource('houston', {
+                type: 'vector',
+                "tiles": [
+                 "https://d2yknfbavd0kgt.cloudfront.net/houston/{z}/{x}/{y}.mvt"
+                ],
+                "maxzoom": 22
+            });
+            map.addLayer({
+                'id': 'houston',
+                type: 'circle',
+                source: 'houston',
+                'source-layer': 'measurements',
+                'paint': {
+                    'circle-color': 
+                        [
+                            'interpolate', ['linear'],
+                            ['number', ['get', 'value']],
+                            ...colorvalues
+                        ],
+                    'circle-stroke-width': [
+                      'interpolate',
+                      ['linear'],
+                      ['zoom'],
+                      2,
+                      1,
+                      14,
+                      6,
+                    ],
+                    'circle-stroke-opacity': 0,
+                    'circle-opacity': 1,
+                    'circle-radius': [
+                      'interpolate',
+                      ['linear'],
+                      ['zoom'],
+                      1,
+                      0.5,
+                      20,
+                      6
+                    ],
+                  },
+            });
+        });
+    </script>
+</body>
+</html>
